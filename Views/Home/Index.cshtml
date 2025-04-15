@@ -1,0 +1,56 @@
+﻿@using VendingMachine.Models.ViewModels
+@model CatalogViewModel
+<h1>Газированные напитки</h1>
+
+@if (Model.IsMachineLocked)
+{
+    <p>Извините, в данный момент автомат занят</p>
+}
+else
+{
+    <div>
+        <label>Бренд:</label>
+        <select id="brandFilter">
+            <option value="All">Все бренды</option>
+            @foreach (var brand in Model.Brands)
+            {
+                <option value="@brand" selected="@(Model.SelectedBrand == brand)">@brand</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label>Стоимость:</label>
+        <input type="range" id="priceSlider" min="0" max="1000" value="@Model.MaxPrice">
+        <span id="priceValue">@Model.MinPrice - @Model.MaxPrice</span>
+        <h3>Загрузка данных о напитках</h3>
+        <form asp-action="UploadProducts" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".xlsx,.xls" required />
+            <button type="submit">Загрузить Excel</button>
+        </form>
+        <p id="uploadMessage" style="color: green; display: none;"></p>
+        <p id="uploadError" style="color: red; display: none;"></p>
+    </div>
+
+    <div class="product-grid">
+        @foreach (var product in Model.Products)
+        {
+            <div class="product">
+                <h3>@product.Name</h3>
+                <p>Цена: @product.Price руб.</p>
+                @if (product.Stock > 0)
+                {
+                    <button onclick="addToCart(@product.Id)">Выбрать</button>
+                }
+                else
+                {
+                    <button disabled>Закончился</button>
+                }
+            </div>
+        }
+    </div>
+    <button id="toOrder" @(Model.CartCount > 0 ? "" : "disabled")>Выбрано (@Model.CartCount)</button>
+}
+
+@section Scripts {
+    <script src="~/js/catalog.js"></script>
+}

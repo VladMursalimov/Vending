@@ -1,0 +1,27 @@
+﻿@using VendingMachine.Models.ViewModels
+@model PaymentViewModel
+<h1>Оплата</h1>
+
+<div>
+    @foreach (var coin in Model.Coins)
+    {
+        <div>
+            <span>Монета @coin.Denomination руб.</span>
+            <input type="number" min="0" value="0" data-denomination="@coin.Denomination" onchange="updatePayment()">
+        </div>
+    }
+</div>
+<p>Итоговая сумма: @Model.TotalAmount руб.</p>
+<p>Внесено: <span id="insertedAmount" style="color: red;">0</span> руб.</p>
+<button onclick="window.location.href='/Home/Order'">Вернуться</button>
+<button id="payButton" disabled>Оплатить</button>
+
+<div id="result" style="display: none;">
+    <p>Спасибо за вашу покупку, пожалуйста, возьмите вашу сдачу</p>
+    <p>Сдача: <span id="change"></span></p>
+    <button onclick="window.location.href='/'">Каталог напитков</button>
+</div>
+
+@section Scripts {
+    <script src="~/js/payment.js"></script>
+}

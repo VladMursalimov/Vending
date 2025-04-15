@@ -1,0 +1,31 @@
+﻿@using VendingMachine.Models.ViewModels
+@model OrderViewModel
+<h1>Оформление заказа</h1>
+
+@if (!Model.Items.Any())
+{
+        <p>У вас нет ни одного товара, вернитесь на страницу каталога.</p>
+        <a href="/">Вернуться</a>
+}
+else
+{
+        <div id="orderItems">
+        @foreach (var item in Model.Items)
+        {
+            <div class="order-item" data-id="@item.ProductId" data-price="@item.Price">
+                <span>@item.Name</span>
+                <input type="number" value="@item.Quantity" min="0" max="@item.Stock" onchange="updateQuantity(this, @item.ProductId)">
+                <span>Цена: <span class="item-price">@(item.Quantity * item.Price)</span> руб.</span>
+                <span>В наличии: @item.Stock</span>
+                <button onclick="removeItem(@item.ProductId)">Удалить</button>
+            </div>
+        }
+        </div>
+        <p>Итоговая сумма: <span id="totalAmount">@Model.Items.Sum(i => i.Quantity * i.Price)</span> руб.</p>
+        <button onclick="window.location.href='/'">Вернуться</button>
+        <button onclick="window.location.href='/Home/Payment'">Оплата</button>
+}
+
+@section Scripts {
+        <script src="~/js/order.js"></script>
+}
